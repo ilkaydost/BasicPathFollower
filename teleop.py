@@ -29,12 +29,10 @@ from sensor_msgs.msg import JointState
 from nav_msgs.msg import GetMapActionGoal
 import roslib
 from tf.transformations import quaternion_from_euler
-#from gazebo_msgs import GetModelState
+#from gazebo_msgs import GetModelState TO:DO: Remove this import
 from tf.transformations import euler_from_quaternion
 import numpy as np
 import  matplotlib.pyplot as plt
-
-
 
 
 class Teleoperation:
@@ -94,51 +92,16 @@ class Teleoperation:
         
     def euclidean_distance(self):
         #Euclidean distance between current pose and the goal
-        if self.counter == 0:
-            return sqrt(pow((self.path_list[0][0] - self.pose.x), 2) + pow((self.path_list[0][1] - self.pose.y), 2))
-        elif self.counter == 1:
-            return sqrt(pow((self.path_list[1][0] - self.pose.x), 2) + pow((self.path_list[1][1] - self.pose.y), 2))
-        elif self.counter == 2:
-            return sqrt(pow((self.path_list[2][0] - self.pose.x), 2) + pow((self.path_list[2][1] - self.pose.y), 2))
-        elif self.counter == 3:
-            return sqrt(pow((self.path_list[3][0] - self.pose.x), 2) + pow((self.path_list[3][1] - self.pose.y), 2))
-        elif self.counter == 4:
-            return sqrt(pow((self.path_list[4][0] - self.pose.x), 2) + pow((self.path_list[4][1] - self.pose.y), 2))
-        elif self.counter == 5:
-            return sqrt(pow((self.path_list[5][0] - self.pose.x), 2) + pow((self.path_list[5][1] - self.pose.y), 2))
-        elif self.counter == 6:
-            return sqrt(pow((self.path_list[6][0] - self.pose.x), 2) + pow((self.path_list[6][1] - self.pose.y), 2))
-        elif self.counter == 7:
-            return sqrt(pow((self.path_list[7][0] - self.pose.x), 2) + pow((self.path_list[7][1] - self.pose.y), 2))
-        elif self.counter == 8:
-            return sqrt(pow((self.path_list[8][0] - self.pose.x), 2) + pow((self.path_list[8][1] - self.pose.y), 2))
-        elif self.counter == 9:
-            return sqrt(pow((self.path_list[9][0] - self.pose.x), 2) + pow((self.path_list[9][1] - self.pose.y), 2))
+        if self.counter < len(self.path_list):
+            return sqrt(pow((self.path_list[self.counter][0] - self.pose.x), 2) + pow((self.path_list[self.counter][1] - self.pose.y), 2))
+        return 0.0
 
     def steering_angle(self):
         #rospy.loginfo("STEERING DEGREE: %.4f", 57.3*atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x))
         #return atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x)
-        if self.counter == 0:
-            return atan2(self.path_list[0][1]  - self.pose.y, self.path_list[0][0] - self.pose.x)
-            #return atan2(self.path_list[counter][ 1]  - self.pose.y, self.path_list[counter][counter] - self.pose.x)
-        elif self.counter == 1:
-            return atan2(self.path_list[1][1]  - self.pose.y, self.path_list[1][0] - self.pose.x)
-        elif self.counter == 2:
-            return atan2(self.path_list[2][1]  - self.pose.y, self.path_list[2][0] - self.pose.x)
-        elif self.counter == 3:
-            return atan2(self.path_list[3][1]  - self.pose.y, self.path_list[3][0] - self.pose.x)
-        elif self.counter == 4:
-            return atan2(self.path_list[4][1]  - self.pose.y, self.path_list[4][0] - self.pose.x)
-        elif self.counter == 5:
-            return atan2(self.path_list[5][1]  - self.pose.y, self.path_list[5][0] - self.pose.x)
-        elif self.counter == 6:
-            return atan2(self.path_list[6][1]  - self.pose.y, self.path_list[6][0] - self.pose.x)
-        elif self.counter == 7:
-            return atan2(self.path_list[7][1]  - self.pose.y, self.path_list[7][0] - self.pose.x)
-        elif self.counter == 8:
-            return atan2(self.path_list[8][1]  - self.pose.y, self.path_list[8][0] - self.pose.x)
-        elif self.counter == 9:
-            return atan2(self.path_list[9][1]  - self.pose.y, self.path_list[9][0] - self.pose.x)
+        if self.counter < len(self.path_list):
+            return atan2(self.path_list[self.counter][1] - self.pose.y, self.path_list[self.counter][0] - self.pose.x)
+        return 0.0
 
 
     def move2goal(self):
@@ -155,7 +118,7 @@ class Teleoperation:
         for i in range(9):
 
             while abs(self.euclidean_distance() >= distance_tolerance):
-                
+                # TO:DO: create constant variables for the robot's speed and steering angle
                 rospy.loginfo("Angle: %.3f", 57.3 * self.steering_angle())
                 rospy.loginfo("Theta: %.3f", theta*57.3)
                 rospy.loginfo("Steering Angle - theta: %.5f", 57.3 * self.steering_angle() - theta*57.3)
